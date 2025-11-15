@@ -46,6 +46,29 @@ npm run build
 
 4. "요약 시작" 버튼을 클릭하면 자동으로 요약이 생성됩니다.
 
+## GitHub Pages 배포
+
+### 자동 배포 (권장)
+
+1. GitHub 저장소 Settings → Pages로 이동
+2. Source를 **GitHub Actions**로 선택
+3. `.github/workflows/deploy.yml` 파일이 자동으로 배포를 처리합니다
+
+### 수동 배포
+
+1. 프로젝트 빌드:
+   ```bash
+   npm run build
+   ```
+
+2. GitHub 저장소 Settings → Pages로 이동
+3. Source를 **Deploy from a branch**로 선택
+4. Branch를 `main`으로 선택
+5. Folder를 `/dist`로 선택
+6. Save 클릭
+
+배포 URL: https://kccho88.github.io/news-master/
+
 ## 주의사항
 
 - CORS 문제로 인해 일부 웹사이트는 직접 접근이 불가능할 수 있습니다. 이 경우 백엔드 서버를 통해 프록시를 구성하는 것을 권장합니다.
