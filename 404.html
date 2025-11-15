@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Site Summary Master</title>
+    <script>
+      // GitHub Pages에서 SPA 라우팅을 위한 리다이렉트
+      var path = window.location.pathname;
+      var base = '/news-master/';
+      if (path.startsWith(base)) {
+        path = path.slice(base.length - 1);
+      }
+      if (path === '' || path === '/') {
+        window.location.href = base + 'index.html';
+      } else {
+        window.location.href = base + 'index.html' + window.location.search + window.location.hash;
+      }
+    </script>
+  </head>
+  <body>
+    <p>리다이렉트 중...</p>
+  </body>
+</html>
+
