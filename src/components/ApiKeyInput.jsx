@@ -25,10 +25,10 @@ function ApiKeyInput({ onSubmit }) {
     <div className="max-w-md mx-auto">
       <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
         <h2 className="text-2xl font-semibold text-gray-900 mb-4 text-center">
-          Gemini API 키 입력
+          OpenAI API 키 입력
         </h2>
         <p className="text-gray-600 text-sm mb-6 text-center">
-          Google AI Studio에서 발급받은 API 키를 입력해주세요
+          OpenAI에서 발급받은 API 키를 입력해주세요
         </p>
         
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -61,12 +61,12 @@ function ApiKeyInput({ onSubmit }) {
             API 키는 브라우저에 안전하게 저장되며, 서버로 전송되지 않습니다.
             <br />
             <a
-              href="https://makersuite.google.com/app/apikey"
+              href="https://platform.openai.com/api-keys"
               target="_blank"
               rel="noopener noreferrer"
               className="text-gray-700 hover:text-gray-900 underline"
             >
-              Google AI Studio에서 API 키 발급받기
+              OpenAI에서 API 키 발급받기
             </a>
           </p>
         </div>

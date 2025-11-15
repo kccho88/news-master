@@ -1,4 +1,7 @@
-const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent'
+// OpenAI API를 사용한 요약 기능
+// 참고: https://platform.openai.com/docs/api-reference
+
+const OPENAI_API_URL = 'https://api.openai.com/v1/chat/completions'
 
 export const summarizeContent = async (apiKey, websiteContent, url) => {
   const prompt = `당신은 세계 최고 수준의 콘텐츠 요약 전문가이자 초등학생도 이해할 수 있게 설명하는 교사입니다.
@@ -13,7 +16,7 @@ export const summarizeContent = async (apiKey, websiteContent, url) => {
 
 3. [Tip : 쉽게 이해하기]
 - 초등학생도 이해할 수 있도록 예시나 비유를 들어 쉽게 설명하세요.
-- 각 예시마다 Gemini로 생성할 이미지를 제안하거나 직접 생성하세요.
+- 각 예시마다 이미지 생성 프롬프트를 제안하세요.
 - 예시 설명은 친근하고 따뜻한 톤으로 작성하세요.
 
 웹사이트 URL: ${url}
@@ -39,37 +42,49 @@ ${websiteContent}
 }`
 
   try {
-    const response = await fetch(`${GEMINI_API_URL}?key=${apiKey}`, {
+    const response = await fetch(OPENAI_API_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        contents: [
+        model: 'gpt-3.5-turbo',
+        messages: [
           {
             role: 'user',
-            parts: [
-              {
-                text: prompt,
-              },
-            ],
+            content: prompt,
           },
         ],
+        temperature: 0.7,
+        max_tokens: 2000,
       }),
     })
 
     if (!response.ok) {
       const errorData = await response.json()
-      throw new Error(errorData.error?.message || 'API 요청 실패')
+      const errorMessage = errorData.error?.message || 'API 요청 실패'
+      
+      // API 키 오류인 경우
+      if (errorMessage.includes('Invalid API key') || errorMessage.includes('Incorrect API key')) {
+        throw new Error('API 키가 올바르지 않습니다. OpenAI에서 발급받은 API 키를 확인해주세요.')
+      }
+      
+      // 사용량 제한 오류
+      if (errorMessage.includes('rate limit') || errorMessage.includes('quota')) {
+        throw new Error('API 사용량 제한에 도달했습니다. 잠시 후 다시 시도해주세요.')
+      }
+      
+      throw new Error(`요약 생성 실패: ${errorMessage}`)
     }
 
     const data = await response.json()
     
-    if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) {
+    if (!data.choices || !data.choices[0] || !data.choices[0].message) {
       throw new Error('응답 형식이 올바르지 않습니다')
     }
 
-    const text = data.candidates[0].content.parts[0].text
+    const text = data.choices[0].message.content
     
     // JSON 추출 (마크다운 코드 블록 제거)
     let jsonText = text.trim()
@@ -121,16 +136,39 @@ ${websiteContent}
     
     return summaryData
   } catch (error) {
-    console.error('Gemini API Error:', error)
-    throw new Error(`요약 생성 실패: ${error.message}`)
+    console.error('OpenAI API Error:', error)
+    throw error
   }
 }
 
 export const generateImage = async (apiKey, imagePrompt) => {
-  // Gemini의 이미지 생성 API는 현재 제한적이므로
-  // 여기서는 이미지 프롬프트를 반환하고, 실제 이미지 생성은
-  // Gemini의 이미지 생성 기능이 사용 가능할 때 구현할 수 있습니다.
-  // 현재는 이미지 프롬프트를 그대로 반환합니다.
-  return imagePrompt
+  // OpenAI의 이미지 생성 API (DALL-E) 사용
+  try {
+    const response = await fetch('https://api.openai.com/v1/images/generations', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: 'dall-e-3',
+        prompt: imagePrompt,
+        n: 1,
+        size: '1024x1024',
+      }),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.error?.message || '이미지 생성 실패')
+    }
+
+    const data = await response.json()
+    return data.data[0].url
+  } catch (error) {
+    console.error('이미지 생성 실패:', error)
+    // 이미지 생성 실패 시 프롬프트 반환
+    return imagePrompt
+  }
 }
 

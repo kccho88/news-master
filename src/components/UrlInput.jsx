@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { fetchWebsiteContent } from '../utils/fetchWebsite'
-import { summarizeContent } from '../utils/gemini'
+import { summarizeContent } from '../utils/openai'
 
 function UrlInput({ apiKey, onStart, onComplete, onError }) {
   const [url, setUrl] = useState('')
@@ -60,7 +60,7 @@ function UrlInput({ apiKey, onStart, onComplete, onError }) {
         sourceUrl = '직접 입력된 텍스트'
       }
       
-      // 2. Gemini로 요약하기
+      // 2. ChatGPT로 요약하기
       const summaryData = await summarizeContent(apiKey, websiteContent, sourceUrl)
       
       onComplete(summaryData)

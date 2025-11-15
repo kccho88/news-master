@@ -1,4 +1,4 @@
-const API_KEY_STORAGE_KEY = 'gemini_api_key'
+const API_KEY_STORAGE_KEY = 'openai_api_key'
 
 export const saveApiKey = (key) => {
   localStorage.setItem(API_KEY_STORAGE_KEY, key)
