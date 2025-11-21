@@ -48,3 +48,5 @@ npm run build
 - `404.html` 파일이 루트에 있는지 확인
 - GitHub Pages 설정에서 커스텀 404 페이지가 활성화되어 있는지 확인
 
+
+

@@ -15,3 +15,5 @@ echo "3. Branch를 'main'으로 선택"
 echo "4. Folder를 '/dist'로 선택"
 echo "5. Save 클릭"
 
+
+

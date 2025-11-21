@@ -172,3 +172,5 @@ export const generateImage = async (apiKey, imagePrompt) => {
   }
 }
 
+
+
